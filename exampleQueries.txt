@@ -1,0 +1,21 @@
+query($brand: String!, $year: Int!){
+  byBrand :getCarsByBrand(brand: $brand){
+    ...carFields
+  }
+  byYear: getCarsByYear(year : $year){
+    ...carFields
+  }
+}
+
+fragment carFields on Car{
+  model_name,
+  model_year,
+  model_trim
+}
+
+
+Query Variables
+{
+  "brand": "BMW",
+  "year" : 2019
+}
