@@ -7,7 +7,7 @@ const resolvers = require('./resolver')
 const JWT_SECRET = "janitha000"
 
 const app = express();
-const auth = jwt({ secret: JWT_SECRET, credentialsRequired: false, algorithms: ['RS256'] })
+const auth = jwt({ secret: JWT_SECRET, credentialsRequired: false, algorithms: ['sha1', 'RS256', 'HS256'] })
 app.use(auth)
 
 const server = new ApolloServer({
@@ -15,8 +15,12 @@ const server = new ApolloServer({
     resolvers,
     playground: { endpoint: '/graphql' },
     context: ({ req }) => {
-        const user = req.headers.user ? JSON.parse(req.headers.user) :
-            req.user ? req.user : null
+        const user = req.headers.user
+            ? JSON.parse(req.headers.user)
+            : req.user
+                ? req.user
+                : null;
+
         return { user }
     }
 })

@@ -5,13 +5,15 @@ let Users =
             id: 1,
             userName: "Janitha",
             name: "Tennakoon",
-            password: "janitha@123"
+            password: "janitha@123",
+            role: "admin"
         },
         {
             id: 2,
             userName: "Vindya",
             name: "Hettige",
-            password: "vindya@123"
+            password: "vindya@123",
+            role: "user"
         },
         {
             id: 3,

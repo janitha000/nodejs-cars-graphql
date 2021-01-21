@@ -1,10 +1,6 @@
-const { getAllUsers, addUser, findByUserName, findUserById } = require('./User')
+const { getAllUsers, findUserById } = require('./User')
 const { getAllCars, getCarsByBrand, getCarsByYear } = require('./Cars')
-const jsonwebtoken = require("jsonwebtoken");
-const { ProvidedRequiredArgumentsOnDirectivesRule } = require('graphql/validation/rules/ProvidedRequiredArgumentsRule');
-const { addErrorLoggingToSchema } = require('graphql-tools');
-
-const JWT_TOKEN_SECRET = 'janitha000'
+const { register, login } = require('./auth')
 
 const resolvers = {
     Query: {
@@ -15,6 +11,8 @@ const resolvers = {
 
         async current(_, args, { user }) {
             if (user) {
+                if (user.role !== "admin")
+                    throw new Error("You are not authorized to view this information")
                 return findUserById(user.id)
             }
 
@@ -36,22 +34,13 @@ const resolvers = {
 
     Mutation: {
         async register(_, { userName, name, password }) {
-            const user = addUser({ userName, name, password });
-            return jsonwebtoken.sign({ id: user.id, userName: user.userName }, JWT_TOKEN_SECRET)
+            const token = register(userName, name, password)
+            return token;
         },
 
         async login(_, { username, password }) {
-            const user = findByUserName(username);
-            if (!user) {
-                throw new Error('User does not exist on the system')
-            }
-
-            const valid = (user.password === password)
-            if (!valid) {
-                throw new Error('Invalid password')
-            }
-
-            return jsonwebtoken.sign({ id: user.id, userName: user.userName }, JWT_TOKEN_SECRET)
+            const token = login(username, password)
+            return token;
 
         }
     }
