@@ -1,7 +1,9 @@
 const { gql } = require('apollo-server-express')
 
 const typeDefs = gql`
+    "Existing users of the system"
     type User {
+        "Unique Id for each User"
         id: Int!
         userName: String!
         name: String!
@@ -79,9 +81,29 @@ const typeDefs = gql`
     }
 
     type Mutation{
-        register(userName: String!, name: String!, password: String!): String
+        register(user: RegisterInput): RegisterResponse
         login(username: String!, password: String!): String
         
+    }
+
+    input RegisterInput{
+        userName: String!
+        name: String!
+         password: String!
+    }
+
+    interface MutationResponse {
+        code: String!
+        success: Boolean!
+        message: String!
+    }
+
+    type RegisterResponse implements MutationResponse{
+        code: String!
+        success: Boolean!
+        message: String!
+        user: User
+        token: String!
     }
 
 `

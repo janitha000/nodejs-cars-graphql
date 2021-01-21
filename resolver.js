@@ -1,6 +1,7 @@
 const { getAllUsers, findUserById } = require('./User')
 const { getAllCars, getCarsByBrand, getCarsByYear } = require('./Cars')
-const { register, login } = require('./auth')
+const { register, login } = require('./auth');
+const { AuthenticationError } = require('apollo-server-express');
 
 const resolvers = {
     Query: {
@@ -12,11 +13,11 @@ const resolvers = {
         async current(_, args, { user }) {
             if (user) {
                 if (user.role !== "admin")
-                    throw new Error("You are not authorized to view this information")
+                    throw new AuthenticationError("User is not authorized")
                 return findUserById(user.id)
             }
 
-            throw new Error("Sorry, you're not an authenticated user!")
+            throw new AuthenticationError("Sorry, you're not an authenticated user!")
         },
 
         async getAllCars() {
@@ -33,7 +34,7 @@ const resolvers = {
     },
 
     Mutation: {
-        async register(_, { userName, name, password }) {
+        async register(_, { user: { userName, name, password } }) {
             const token = register(userName, name, password)
             return token;
         },

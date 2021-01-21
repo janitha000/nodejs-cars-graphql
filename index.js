@@ -22,12 +22,13 @@ const server = new ApolloServer({
                 : null;
 
         return { user }
-    }
+    },
+    tracing: true,
 })
 
 server.applyMiddleware({ app })
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log("The server started on port " + PORT);
+    console.log("🚀 The server started on port " + PORT);
 });
